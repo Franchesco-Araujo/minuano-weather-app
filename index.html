@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Previsão do Tempo Comparada - Sítio & Cidade</title>
+  
+  <!-- Fontes do Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Estilos do Leaflet Map (CDN) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Estilo Customizado do App -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Plano de Fundo Dinâmico com Gradiente e Nuvens -->
+  <div id="dynamic-bg" class="bg-gradient-default"></div>
+
+  <div class="app-container">
+    
+    <!-- Barra Superior / Cabeçalho -->
+    <header class="main-header">
+      <div class="logo-area">
+        <i data-lucide="cloud-sun" class="logo-icon"></i>
+        <h1>Minuano<span>, clima e tempo</span></h1>
+      </div>
+      
+      <!-- Caixa de Busca Integrada com Sugestões -->
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text" id="search-input" placeholder="Buscar cidade, distrito ou local..." autocomplete="off">
+          <button id="gps-button" title="Usar Localização Atual (GPS)">
+            <i data-lucide="locate"></i>
+          </button>
+        </div>
+        <!-- Dropdown de resultados da pesquisa -->
+        <div id="search-results" class="search-results-dropdown hidden"></div>
+      </div>
+      
+      <!-- Painel de Controles Rápidos -->
+      <div class="controls-area">
+        <button id="favorite-button" class="btn-control" title="Salvar localização atual como favorita (Sítio)">
+          <i data-lucide="heart"></i>
+          <span>Meu Sítio</span>
+        </button>
+        <div class="temp-unit-toggle">
+          <button id="unit-c" class="unit-btn active">°C</button>
+          <button id="unit-f" class="unit-btn">°F</button>
+        </div>
+        <button id="settings-button" class="btn-control" title="Configurações e Chaves de API">
+          <i data-lucide="settings"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Barra de Status da Localização e Coordenadas -->
+    <section class="location-status-bar">
+      <div class="location-info">
+        <i data-lucide="map-pin" class="status-icon text-orange"></i>
+        <span id="current-location-name" class="location-name">Carregando localização...</span>
+      </div>
+      <div class="coordinates-info">
+        <span>Lat: <strong id="current-lat">-</strong></span>
+        <span>Lon: <strong id="current-lon">-</strong></span>
+        <button id="btn-manual-coords" class="btn-text-link">Inserir Lat/Lon Manual</button>
+      </div>
+    </section>
+
+    <!-- Abas de Previsão Diária (Carrossel Horizontal) -->
+    <nav class="days-selector-container">
+      <div class="days-scroll-wrapper" id="days-tabs">
+        <!-- Gerado via JavaScript: 7 cards de dias -->
+        <div class="day-tab-skeleton"></div>
+        <div class="day-tab-skeleton"></div>
+        <div class="day-tab-skeleton"></div>
+        <div class="day-tab-skeleton"></div>
+        <div class="day-tab-skeleton"></div>
+        <div class="day-tab-skeleton"></div>
+        <div class="day-tab-skeleton"></div>
+      </div>
+    </nav>
+
+    <!-- Grid Principal (2 Colunas) -->
+    <main class="dashboard-grid">
+      
+      <!-- Coluna Esquerda: Cartão Detalhado do Dia / Modelo Selecionado -->
+      <section class="dashboard-column left-col">
+        
+        <!-- Seleção de Fontes/Provedores de Dados -->
+        <div class="provider-tabs-wrapper">
+          <div class="provider-tabs" id="provider-tabs">
+            <button class="provider-tab active" data-provider="best_match">Melhor Mix</button>
+            <button class="provider-tab" data-provider="ecmwf_ifs025">ECMWF</button>
+            <button class="provider-tab" data-provider="gfs_seamless">GFS</button>
+            <button class="provider-tab" data-provider="icon_seamless">ICON</button>
+            <button class="provider-tab hidden" id="tab-openweathermap" data-provider="openweathermap">OpenWeather</button>
+          </div>
+        </div>
+
+        <!-- Cartão de Clima em Detalhes -->
+        <div class="weather-detail-card glass-panel" id="weather-detail-card">
+          <div class="card-header">
+            <span class="selected-day-label" id="detail-day-label">Hoje</span>
+            <span class="provider-badge" id="detail-provider-badge">Open-Meteo</span>
+          </div>
+          
+          <div class="card-main-info">
+            <div class="temp-display">
+              <span class="temp-value" id="detail-temp">--</span>
+              <span class="temp-degree">°</span>
+            </div>
+            <div class="condition-display">
+              <div class="condition-icon-container">
+                <i data-lucide="cloud" id="detail-icon" class="weather-big-icon"></i>
+              </div>
+              <span class="condition-text" id="detail-condition">Carregando...</span>
+              <span class="feels-like-text">Sensação: <span id="detail-feels">--</span>°</span>
+            </div>
+          </div>
+
+          <div class="card-metrics-grid">
+            <div class="metric-item">
+              <div class="metric-icon"><i data-lucide="wind"></i></div>
+              <div class="metric-data">
+                <span class="metric-title">Vento</span>
+                <span class="metric-value" id="detail-wind">-- km/h</span>
+              </div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-icon"><i data-lucide="droplets"></i></div>
+              <div class="metric-data">
+                <span class="metric-title">Umidade</span>
+                <span class="metric-value" id="detail-humidity">-- %</span>
+              </div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-icon"><i data-lucide="gauge"></i></div>
+              <div class="metric-data">
+                <span class="metric-title">Pressão</span>
+                <span class="metric-value" id="detail-pressure">-- hPa</span>
+              </div>
+            </div>
+            <div class="metric-item">
+              <div class="metric-icon"><i data-lucide="umbrella"></i></div>
+              <div class="metric-data">
+                <span class="metric-title">Chuva</span>
+                <span class="metric-value" id="detail-rain">-- %</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Coluna Direita: Gráfico de Previsão Horária e Comparação -->
+      <section class="dashboard-column right-col">
+        <div class="chart-card glass-panel">
+          <div class="chart-header">
+            <div class="chart-title-area">
+              <h2>Previsão Horária</h2>
+              <p>Compare as tendências das fontes ao longo das horas</p>
+            </div>
+            <!-- Seletores Rápidos para ligar/desligar linhas no gráfico -->
+            <div class="chart-comparisons-toggles" id="chart-toggles">
+              <label class="toggle-checkbox">
+                <input type="checkbox" id="toggle-ecmwf" checked>
+                <span class="checkbox-custom ecmwf-color"></span>
+                <span>ECMWF</span>
+              </label>
+              <label class="toggle-checkbox">
+                <input type="checkbox" id="toggle-gfs" checked>
+                <span class="checkbox-custom gfs-color"></span>
+                <span>GFS</span>
+              </label>
+              <label class="toggle-checkbox">
+                <input type="checkbox" id="toggle-icon" checked>
+                <span class="checkbox-custom icon-color"></span>
+                <span>ICON</span>
+              </label>
+              <label class="toggle-checkbox hidden" id="toggle-owm-label">
+                <input type="checkbox" id="toggle-owm" checked>
+                <span class="checkbox-custom owm-color"></span>
+                <span>OpenWeather</span>
+              </label>
+            </div>
+          </div>
+          
+          <div class="chart-container">
+            <canvas id="hourlyChart"></canvas>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Seção de Mapa Interativo -->
+    <section class="map-section glass-panel">
+      <div class="map-header">
+        <div class="map-title-area">
+          <h2>Mapa de Localização</h2>
+          <p>Verifique o ponto exato da previsão no mapa</p>
+        </div>
+      </div>
+      <div class="map-wrapper">
+        <div id="map"></div>
+      </div>
+    </section>
+
+    <!-- Rodapé -->
+    <footer class="main-footer">
+      <p>Desenvolvido para uso pessoal e sítio &copy; 2026. Dados meteorológicos abertos do Open-Meteo.</p>
+    </footer>
+  </div>
+
+  <!-- Modal de Configurações / Chaves de API / Lat-Lon Manual -->
+  <div id="settings-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-panel animate-zoom">
+      <div class="modal-header">
+        <h2>Configurações do App</h2>
+        <button id="close-modal" class="close-btn"><i data-lucide="x"></i></button>
+      </div>
+      <div class="modal-body">
+        
+        <!-- Chaves de API -->
+        <div class="config-section">
+          <h3><i data-lucide="key"></i> Chaves de API Opcionais</h3>
+          <p class="section-desc">Insira chaves de serviços externos para habilitar fontes de dados adicionais.</p>
+          <div class="input-group">
+            <label for="owm-api-key">OpenWeatherMap API Key (Free tier):</label>
+            <input type="password" id="owm-api-key" placeholder="Insira sua API Key do OpenWeather">
+            <small class="help-text">Obtenha em <a href="https://openweathermap.org" target="_blank" rel="noopener">openweathermap.org</a>. Deixe em branco para usar apenas fontes sem chaves.</small>
+          </div>
+        </div>
+
+        <!-- Estilo do Mapa -->
+        <div class="config-section">
+          <h3><i data-lucide="map"></i> Estilo do Mapa</h3>
+          <p class="section-desc">Escolha o tema visual do mapa interativo.</p>
+          <div class="input-group">
+            <label for="map-theme-select">Tema do Mapa:</label>
+            <select id="map-theme-select" class="select-control">
+              <option value="light">Claro (CartoDB Positron)</option>
+              <option value="dark">Escuro (CartoDB Dark Matter)</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="modal-divider">
+
+        <!-- Coordenadas Manuais -->
+        <div class="config-section">
+          <h3><i data-lucide="navigation"></i> Localização Manual</h3>
+          <p class="section-desc">Especialmente útil para demarcar pontos exatos em sítios e fazendas.</p>
+          <div class="coords-row">
+            <div class="input-group">
+              <label for="manual-lat">Latitude:</label>
+              <input type="number" step="any" id="manual-lat" placeholder="Ex: -23.5489">
+            </div>
+            <div class="input-group">
+              <label for="manual-lon">Longitude:</label>
+              <input type="number" step="any" id="manual-lon" placeholder="Ex: -46.6388">
+            </div>
+          </div>
+          <button id="btn-apply-manual-coords" class="btn-primary">Buscar Coordenadas</button>
+        </div>
+
+        <hr class="modal-divider">
+
+        <!-- Localização Favorita Cadastrada -->
+        <div class="config-section">
+          <h3><i data-lucide="heart" class="text-red"></i> Local Favorito (Meu Sítio)</h3>
+          <p class="section-desc">Coordenadas que serão carregadas por padrão ao iniciar o aplicativo.</p>
+          <div class="saved-favorite-display" id="saved-favorite-info">
+            Nenhum local favorito salvo ainda.
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button id="btn-save-settings" class="btn-primary">Salvar e Aplicar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bibliotecas Externas (CDNs) -->
+  <!-- Chart.js para o gráfico de linhas -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Leaflet.js para o mapa -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Lucide Icons para carregar os ícones baseados em vetores -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Scripts de Lógica do Aplicativo -->
+  <script src="weather-services.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

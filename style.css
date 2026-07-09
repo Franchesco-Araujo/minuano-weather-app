@@ -1,0 +1,1453 @@
+/*
+ * style.css
+ * 
+ * Sistema de Design e Estilização Premium para a aplicação Minuano.
+ * Desenvolvido com CSS Vanilla, variáveis dinâmicas, glassmorphism e responsividade.
+ */
+
+/* ----------------------------------------------------
+   1. Variáveis de Design & Reset
+   ---------------------------------------------------- */
+:root {
+  --font-primary: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Cores Temáticas */
+  --bg-dark: #090d16;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dark: #0f172a;
+  
+  /* Cores de Provedores e Destaques */
+  --color-primary: #ff6b4a; /* Laranja Energético */
+  --color-primary-hover: #ff856b;
+  --color-ecmwf: #38bdf8; /* Azul claro */
+  --color-gfs: #34d399; /* Verde esmeralda */
+  --color-icon: #a855f7; /* Roxo */
+  --color-owm: #f59e0b; /* Amarelo/Laranja clássico */
+  
+  /* Glassmorphism */
+  --glass-bg: rgba(15, 23, 42, 0.45);
+  --glass-bg-hover: rgba(30, 41, 59, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-focus: rgba(255, 107, 74, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  
+  /* Dimensões e Efeitos */
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: all 0.15s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ----------------------------------------------------
+   2. Planos de Fundo Dinâmicos (Aplicados via JS)
+   ---------------------------------------------------- */
+#dynamic-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  transition: var(--transition-smooth);
+}
+
+/* Tema Ensolarado/Dia Clássico */
+.bg-gradient-clear {
+  background: radial-gradient(circle at 80% 20%, #1e3a8a 0%, #0f172a 70%),
+              linear-gradient(135deg, #ff856b 0%, #1e293b 50%);
+}
+
+/* Tema Chuvoso/Tempestuoso/Instável */
+.bg-gradient-rain {
+  background: radial-gradient(circle at 10% 10%, #1e293b 0%, #090d16 80%),
+              linear-gradient(135deg, #475569 0%, #0f172a 100%);
+}
+
+/* Tema Nublado/Névoa/Cinza */
+.bg-gradient-cloudy {
+  background: radial-gradient(circle at 50% 10%, #334155 0%, #0f172a 90%),
+              linear-gradient(135deg, #1e293b 0%, #020617 100%);
+}
+
+/* Tema Padrão / Noite Limpa */
+.bg-gradient-default {
+  background: radial-gradient(circle at 75% 15%, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 60%),
+              radial-gradient(circle at 15% 85%, rgba(255, 107, 74, 0.1) 0%, rgba(0, 0, 0, 0) 50%),
+              linear-gradient(135deg, #090d16 0%, #0f172a 100%);
+}
+
+/* ----------------------------------------------------
+   3. Container Geral e Layout
+   ---------------------------------------------------- */
+.app-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-height: 100vh;
+}
+
+/* Painel de Vidro (Padrão para cards e modais) */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  transition: var(--transition-smooth);
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ----------------------------------------------------
+   4. Cabeçalho (Header)
+   ---------------------------------------------------- */
+.main-header {
+  display: grid;
+  grid-template-columns: 240px 1fr auto;
+  align-items: center;
+  gap: 24px;
+  background: rgba(15, 23, 42, 0.3);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  z-index: 10;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo-icon {
+  color: var(--color-primary);
+  width: 32px;
+  height: 32px;
+  filter: drop-shadow(0 0 8px rgba(255, 107, 74, 0.4));
+  animation: logo-float 4s ease-in-out infinite;
+}
+
+.logo-area h1 {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.logo-area h1 span {
+  color: var(--color-primary);
+}
+
+/* Caixa de Busca */
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  justify-self: center;
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 0 8px 0 16px;
+  height: 44px;
+  transition: var(--transition-fast);
+}
+
+.search-input-wrapper:focus-within {
+  border-color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(255, 107, 74, 0.25);
+}
+
+.search-icon {
+  color: var(--text-muted);
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+}
+
+.search-container input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-size: 15px;
+  height: 100%;
+}
+
+.search-container input::placeholder {
+  color: var(--text-muted);
+}
+
+#gps-button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+#gps-button:hover {
+  color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Dropdown de Resultados da Pesquisa */
+.search-results-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background: #0f172a;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  z-index: 100;
+  overflow: hidden;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.search-results-dropdown.hidden {
+  display: none;
+}
+
+.result-item {
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: var(--text-main);
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  transition: var(--transition-fast);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.result-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.result-coords {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Área de Controles do Cabeçalho */
+.controls-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-control {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  padding: 0 16px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: var(--transition-fast);
+}
+
+.btn-control i {
+  width: 18px;
+  height: 18px;
+}
+
+.btn-control:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--color-primary);
+  color: var(--color-primary-hover);
+}
+
+.btn-control.active {
+  background: rgba(255, 107, 74, 0.15);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.temp-unit-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  height: 44px;
+}
+
+.unit-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  width: 38px;
+  height: 100%;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--transition-fast);
+}
+
+.unit-btn.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* ----------------------------------------------------
+   5. Barra de Status da Localização
+   ---------------------------------------------------- */
+.location-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.location-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.text-orange {
+  color: var(--color-primary);
+}
+
+.location-name {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+.coordinates-info {
+  font-size: 13px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.coordinates-info strong {
+  color: var(--text-main);
+  font-family: monospace;
+}
+
+.btn-text-link {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+.btn-text-link:hover {
+  color: var(--color-primary-hover);
+}
+
+/* ----------------------------------------------------
+   6. Abas/Carrossel de Dias (Dias da Semana)
+   ---------------------------------------------------- */
+.days-selector-container {
+  width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.days-selector-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.days-scroll-wrapper {
+  display: flex;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.day-tab-btn {
+  flex: 1;
+  min-width: 120px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px 12px;
+  cursor: pointer;
+  color: var(--text-main);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: var(--transition-smooth);
+}
+
+.day-tab-btn:hover {
+  transform: translateY(-2px);
+  background: var(--glass-bg-hover);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.day-tab-btn.active {
+  background: rgba(255, 107, 74, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 20px rgba(255, 107, 74, 0.2);
+}
+
+.day-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.day-tab-btn.active .day-name {
+  color: var(--color-primary-hover);
+}
+
+.day-date {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.day-icon {
+  width: 28px;
+  height: 28px;
+  color: var(--text-main);
+}
+
+.day-tab-btn.active .day-icon {
+  color: var(--color-primary);
+}
+
+.day-temps {
+  display: flex;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.max-temp {
+  color: var(--text-main);
+}
+
+.min-temp {
+  color: var(--text-muted);
+}
+
+.day-rain-prob {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  color: var(--color-ecmwf);
+  font-weight: 500;
+}
+
+.day-rain-prob i {
+  width: 12px;
+  height: 12px;
+}
+
+/* Skeletons de carregamento das abas */
+.day-tab-skeleton {
+  min-width: 120px;
+  height: 120px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%);
+  background-size: 200% 100%;
+  animation: loading-shimmer 1.5s infinite;
+}
+
+/* ----------------------------------------------------
+   7. Grid do Painel Principal
+   ---------------------------------------------------- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+/* ----------------------------------------------------
+   8. Coluna Esquerda: Cartão Detalhado & Provedores
+   ---------------------------------------------------- */
+.provider-tabs-wrapper {
+  margin-bottom: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.provider-tabs-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.provider-tabs {
+  display: flex;
+  gap: 6px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--glass-border);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  width: max-content;
+}
+
+.provider-tab {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.provider-tab.hidden {
+  display: none;
+}
+
+.provider-tab:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.provider-tab.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+/* Cartão Detalhado */
+.weather-detail-card {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.weather-detail-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.selected-day-label {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.provider-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.card-main-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.temp-display {
+  display: flex;
+  align-items: flex-start;
+}
+
+.temp-value {
+  font-size: 80px;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -3px;
+  background: linear-gradient(to bottom, #ffffff, #cbd5e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.temp-degree {
+  font-size: 40px;
+  font-weight: 300;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+.condition-display {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  gap: 4px;
+}
+
+.condition-icon-container {
+  width: 56px;
+  height: 56px;
+  background: rgba(255, 107, 74, 0.08);
+  border: 1px solid rgba(255, 107, 74, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 6px;
+  box-shadow: 0 0 15px rgba(255, 107, 74, 0.1);
+}
+
+.weather-big-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--color-primary);
+}
+
+.condition-text {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.feels-like-text {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.feels-like-text span {
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+/* Métricas Climatológicas (Grade inferior) */
+.card-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 24px;
+}
+
+.metric-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  transition: var(--transition-fast);
+}
+
+.metric-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.metric-icon {
+  width: 36px;
+  height: 36px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.metric-icon i {
+  width: 18px;
+  height: 18px;
+}
+
+.metric-item:hover .metric-icon {
+  color: var(--color-primary);
+  background: rgba(255, 107, 74, 0.08);
+}
+
+.metric-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-title {
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* ----------------------------------------------------
+   9. Coluna Direita: Painel do Gráfico
+   ---------------------------------------------------- */
+.chart-card {
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.chart-title-area h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.chart-title-area p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Controles de Ligar/Desligar linhas do gráfico */
+.chart-comparisons-toggles {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.toggle-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-checkbox.hidden {
+  display: none;
+}
+
+.toggle-checkbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkbox-custom {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 2px solid var(--text-muted);
+  transition: var(--transition-fast);
+}
+
+/* Estados Ativos com Cores correspondentes das linhas */
+.toggle-checkbox input:checked ~ .checkbox-custom {
+  border-width: 7px;
+}
+
+.toggle-checkbox input:checked ~ span {
+  color: var(--text-main);
+}
+
+.toggle-checkbox input:checked ~ .ecmwf-color {
+  border-color: var(--color-ecmwf);
+}
+.toggle-checkbox input:checked ~ .gfs-color {
+  border-color: var(--color-gfs);
+}
+.toggle-checkbox input:checked ~ .icon-color {
+  border-color: var(--color-icon);
+}
+.toggle-checkbox input:checked ~ .owm-color {
+  border-color: var(--color-owm);
+}
+
+/* Container do Canvas do Gráfico */
+.chart-container {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 280px;
+}
+
+/* ----------------------------------------------------
+   10. Seção de Mapa
+   ---------------------------------------------------- */
+.map-section {
+  padding: 24px;
+}
+
+.map-header {
+  margin-bottom: 16px;
+}
+
+.map-title-area h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.map-title-area p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.map-wrapper {
+  width: 100%;
+  height: 350px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Impedir de sobrepor modais */
+}
+
+/* Customizações visuais do Leaflet Map */
+.leaflet-container {
+  background: #f3f4f6 !important;
+}
+
+/* Estilos de Mapa Escuro Dinâmico */
+.leaflet-container.dark-theme-map {
+  background: var(--bg-dark) !important;
+}
+.leaflet-container.dark-theme-map .leaflet-bar a {
+  background-color: #0f172a !important;
+  color: var(--text-main) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+.leaflet-container.dark-theme-map .leaflet-bar a:hover {
+  background-color: rgba(255,255,255,0.08) !important;
+  color: var(--color-primary) !important;
+}
+
+/* ----------------------------------------------------
+   11. Rodapé (Footer)
+   ---------------------------------------------------- */
+.main-footer {
+  text-align: center;
+  padding: 24px 0 12px 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ----------------------------------------------------
+   12. Modais (Settings)
+   ---------------------------------------------------- */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(4, 6, 12, 0.7);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 520px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.close-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: none;
+  color: var(--text-muted);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.close-btn:hover {
+  color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.1);
+  transform: rotate(90deg);
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.config-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.config-section h3 {
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.config-section h3 i {
+  width: 18px;
+  height: 18px;
+  color: var(--color-primary);
+}
+
+.section-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.input-group input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: var(--text-main);
+  outline: none;
+  font-size: 14px;
+  transition: var(--transition-fast);
+}
+
+.input-group input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(255, 107, 74, 0.2);
+}
+
+.select-control {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: var(--text-main);
+  outline: none;
+  font-size: 14px;
+  width: 100%;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.select-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(255, 107, 74, 0.2);
+}
+
+.select-control option {
+  background: #0f172a;
+  color: var(--text-main);
+}
+
+.help-text {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.help-text a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+.help-text a:hover {
+  text-decoration: underline;
+}
+
+.coords-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.modal-divider {
+  border: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.saved-favorite-display {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.fav-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-remove-fav {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.btn-remove-fav:hover {
+  text-decoration: underline;
+}
+
+.modal-footer {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-hover);
+  box-shadow: 0 4px 12px rgba(255, 107, 74, 0.3);
+}
+
+/* ----------------------------------------------------
+   13. Animações
+   ---------------------------------------------------- */
+@keyframes loading-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes logo-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-zoom {
+  animation: zoom-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes zoom-in {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ----------------------------------------------------
+   14. Responsividade (Breakpoints)
+   ---------------------------------------------------- */
+
+/* Ajustes gerais para Tablets e Telas Médias (Ex: Mi Pad 5 Pro em Retrato) */
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr; /* Colunas empilham */
+    gap: 16px;
+  }
+  
+  .main-header {
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+  }
+  
+  .search-container {
+    grid-column: 1 / span 2;
+    max-width: 100%;
+    width: 100%;
+    order: 3; /* Busca vai para baixo no cabeçalho */
+  }
+
+  .map-wrapper {
+    height: 300px;
+  }
+}
+
+/* Ajustes finos para Tablets Menores (Portrait) e Telas de Transição */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 16px 12px;
+    gap: 16px;
+  }
+
+  .location-status-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(15, 23, 42, 0.2);
+    padding: 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--glass-border);
+  }
+  
+  .coordinates-info {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .chart-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .chart-comparisons-toggles {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+}
+
+/* Ajustes Exclusivos para Smartphones (Ex: Xiaomi 11T Pro e similares) */
+@media (max-width: 600px) {
+  /* Cabeçalho Compacto */
+  .main-header {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .logo-area h1 {
+    font-size: 16px;
+  }
+
+  .logo-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Compactar botões para caber em telas estreitas */
+  .btn-control span {
+    display: none; /* Esconde texto nos botões, mantendo apenas ícones */
+  }
+  
+  .btn-control {
+    padding: 0 12px;
+    height: 38px;
+    border-radius: var(--radius-sm);
+  }
+
+  .temp-unit-toggle {
+    height: 38px;
+  }
+
+  .unit-btn {
+    width: 32px;
+    font-size: 12px;
+  }
+
+  .search-input-wrapper {
+    height: 38px;
+  }
+
+  .search-container input {
+    font-size: 14px;
+  }
+
+  /* Status e Localização */
+  .location-name {
+    font-size: 15px;
+  }
+
+  .coordinates-info {
+    font-size: 11px;
+  }
+
+  /* Abas Diárias no Carrossel */
+  .day-tab-btn {
+    min-width: 96px;
+    padding: 10px 6px;
+    gap: 4px;
+  }
+
+  .day-name {
+    font-size: 11px;
+  }
+
+  .day-date {
+    font-size: 9px;
+  }
+
+  .day-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .day-temps {
+    font-size: 12px;
+  }
+
+  .day-rain-prob {
+    font-size: 9px;
+  }
+
+  /* Cartão Detalhado Principal */
+  .weather-detail-card {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .selected-day-label {
+    font-size: 16px;
+  }
+
+  .temp-value {
+    font-size: 56px;
+    letter-spacing: -2px;
+  }
+
+  .temp-degree {
+    font-size: 26px;
+  }
+
+  .condition-icon-container {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 2px;
+  }
+
+  .weather-big-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .condition-text {
+    font-size: 14px;
+  }
+
+  .feels-like-text {
+    font-size: 11px;
+  }
+
+  /* Grid de Métricas Climatológicas */
+  .card-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding-top: 16px;
+  }
+
+  .metric-item {
+    padding: 10px 8px;
+    gap: 8px;
+  }
+
+  .metric-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .metric-icon i {
+    width: 14px;
+    height: 14px;
+  }
+
+  .metric-title {
+    font-size: 9px;
+    letter-spacing: 0px;
+  }
+
+  .metric-value {
+    font-size: 12px;
+  }
+
+  /* Gráficos e Mapas */
+  .chart-card {
+    padding: 16px;
+  }
+
+  .chart-title-area h2 {
+    font-size: 15px;
+  }
+
+  .chart-title-area p {
+    font-size: 11px;
+  }
+
+  .chart-container {
+    min-height: 220px;
+  }
+
+  .toggle-checkbox {
+    font-size: 11px;
+  }
+
+  .checkbox-custom {
+    width: 12px;
+    height: 12px;
+  }
+
+  .map-section {
+    padding: 16px;
+  }
+
+  .map-title-area h2 {
+    font-size: 15px;
+  }
+
+  .map-title-area p {
+    font-size: 11px;
+  }
+
+  .map-wrapper {
+    height: 220px;
+  }
+
+  /* Modal de Configurações */
+  .modal-content {
+    padding: 20px;
+    gap: 16px;
+  }
+
+  .modal-header h2 {
+    font-size: 16px;
+  }
+
+  .config-section h3 {
+    font-size: 13px;
+  }
+
+  .input-group label {
+    font-size: 11px;
+  }
+
+  .input-group input {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .btn-primary {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}
+
