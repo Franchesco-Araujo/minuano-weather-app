@@ -19,10 +19,11 @@ let markerInstance = null;
 let tileLayerInstance = null; // Instância da camada de mapa
 let chartInstance = null;
 let mapTheme = "light"; // "light" ou "dark"
+let appLang = "pt"; // "pt", "en", "es"
+window.appLang = appLang;
 
 // Configurações salvas
 let favoriteLocation = null; // { lat, lon, name }
-let openWeatherApiKey = ""; // Chave padrão inserida pelo usuário
 
 // Debounce para busca de cidades
 let searchDebounceTimeout = null;
@@ -47,23 +48,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // --- Carregar e Salvar Configurações (localStorage) ---
 function loadSettings() {
-  const savedKey = localStorage.getItem("owm_api_key");
-  if (savedKey) {
-    openWeatherApiKey = savedKey;
-  }
-  
-  if (openWeatherApiKey) {
-    document.getElementById("owm-api-key").value = openWeatherApiKey;
-    // Mostrar a aba e o toggle do OpenWeather se a chave existir
-    toggleOpenWeatherElements(true);
-  }
-
   // Carregar tema do mapa
   const savedTheme = localStorage.getItem("map_theme");
   if (savedTheme) {
     mapTheme = savedTheme;
   }
   document.getElementById("map-theme-select").value = mapTheme;
+
+  // Carregar idioma do app
+  const savedLang = localStorage.getItem("app_lang");
+  if (savedLang) {
+    appLang = savedLang;
+    window.appLang = appLang;
+  }
+  document.getElementById("app-lang-select").value = appLang;
+  applyTranslations();
 
   const savedFav = localStorage.getItem("favorite_location");
   if (savedFav) {
@@ -72,19 +71,38 @@ function loadSettings() {
   }
 }
 
-function toggleOpenWeatherElements(show) {
-  const tab = document.getElementById("tab-openweathermap");
-  const toggle = document.getElementById("toggle-owm-label");
-  if (show) {
-    tab.classList.remove("hidden");
-    toggle.classList.remove("hidden");
-  } else {
-    tab.classList.add("hidden");
-    toggle.classList.add("hidden");
-    if (activeProvider === "openweathermap") {
-      activeProvider = "best_match";
-      updateProviderTabsUI();
+// --- Aplicar Traduções Dinâmicas ---
+function applyTranslations() {
+  const langData = TRANSLATIONS[appLang] || TRANSLATIONS.pt;
+
+  // Elementos com atributo data-i18n
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const key = el.getAttribute("data-i18n");
+    if (langData[key]) {
+      el.textContent = langData[key];
     }
+  });
+
+  // Atualizar placeholders
+  const searchInput = document.getElementById("search-input");
+  if (searchInput) {
+    searchInput.placeholder = langData["search-placeholder"];
+  }
+
+  // Se a localização atual for a padrão ou GPS, traduzimos na hora
+  if (currentLocationName.includes("Sítio (Serra Gaúcha)") || 
+      currentLocationName.includes("Estate (Serra Gaúcha)") || 
+      currentLocationName.includes("Campo (Serra Gaúcha)")) {
+    currentLocationName = langData["status-default-name"].replace(" (Padrão)", "").replace(" (Default)", "").replace(" (Por Defecto)", "");
+  } else if (currentLocationName.includes("Localização Atual") || 
+             currentLocationName.includes("Current Location") || 
+             currentLocationName.includes("Ubicación Actual")) {
+    currentLocationName = langData["status-gps-success"];
+  }
+
+  const nameSpan = document.getElementById("current-location-name");
+  if (nameSpan) {
+    nameSpan.textContent = currentLocationName;
   }
 }
 
@@ -177,10 +195,11 @@ function setupEventListeners() {
 // --- Geolocalização (GPS) ---
 function tryGeolocation() {
   const nameSpan = document.getElementById("current-location-name");
-  nameSpan.textContent = "Obtendo GPS...";
+  const langData = TRANSLATIONS[appLang] || TRANSLATIONS.pt;
+  nameSpan.textContent = langData["status-gps-obtaining"];
 
   if (!navigator.geolocation) {
-    nameSpan.textContent = "GPS não suportado pelo navegador.";
+    nameSpan.textContent = langData["status-gps-error"];
     fallbackToDefault();
     return;
   }
@@ -189,7 +208,7 @@ function tryGeolocation() {
     (position) => {
       currentLat = position.coords.latitude;
       currentLon = position.coords.longitude;
-      currentLocationName = "Localização Atual (GPS)";
+      currentLocationName = langData["status-gps-success"];
       updateCoordinatesUI();
       fetchAndRenderWeather();
     },
@@ -204,7 +223,8 @@ function tryGeolocation() {
 function fallbackToDefault() {
   currentLat = -29.1201;
   currentLon = -50.9686;
-  currentLocationName = "Sítio (Serra Gaúcha), RS (Padrão)";
+  const langData = TRANSLATIONS[appLang] || TRANSLATIONS.pt;
+  currentLocationName = langData["status-default-name"];
   updateCoordinatesUI();
   fetchAndRenderWeather();
 }
@@ -223,6 +243,7 @@ function updateCoordinatesUI() {
 
 // --- Salvar / Remover Favoritos ---
 function toggleFavoriteCurrent() {
+  const langData = TRANSLATIONS[appLang] || TRANSLATIONS.pt;
   if (favoriteLocation && 
       Math.abs(currentLat - favoriteLocation.lat) < 0.001 && 
       Math.abs(currentLon - favoriteLocation.lon) < 0.001) {
@@ -235,7 +256,7 @@ function toggleFavoriteCurrent() {
     };
     localStorage.setItem("favorite_location", JSON.stringify(favoriteLocation));
     renderFavoriteStatus();
-    showNotification("Local favoritado com sucesso!");
+    showNotification(langData["notification-fav-added"]);
   }
 }
 
@@ -243,32 +264,30 @@ function removeFavorite() {
   favoriteLocation = null;
   localStorage.removeItem("favorite_location");
   renderFavoriteStatus();
-  showNotification("Favorito removido.");
+  const langData = TRANSLATIONS[appLang] || TRANSLATIONS.pt;
+  showNotification(langData["notification-fav-removed"]);
 }
 
 // --- Salvar Configurações Gerais ---
 function saveSettings() {
-  const keyInput = document.getElementById("owm-api-key").value.trim();
-  openWeatherApiKey = keyInput;
-  
-  if (keyInput) {
-    localStorage.setItem("owm_api_key", keyInput);
-    toggleOpenWeatherElements(true);
-  } else {
-    localStorage.removeItem("owm_api_key");
-    toggleOpenWeatherElements(false);
-  }
-
   // Obter e salvar o estilo do mapa
   const selectTheme = document.getElementById("map-theme-select").value;
   mapTheme = selectTheme;
   localStorage.setItem("map_theme", mapTheme);
   updateMapTheme();
 
-  showNotification("Configurações salvas e aplicadas!");
+  // Obter e salvar o idioma do app
+  const selectLang = document.getElementById("app-lang-select").value;
+  appLang = selectLang;
+  window.appLang = appLang;
+  localStorage.setItem("app_lang", appLang);
+  applyTranslations();
+
+  const langData = TRANSLATIONS[appLang] || TRANSLATIONS.pt;
+  showNotification(langData["notification-save-success"]);
   document.getElementById("settings-modal").classList.add("hidden");
   
-  // Recarregar os dados para incluir o OpenWeatherMap se houver chave nova
+  // Recarregar os dados
   fetchAndRenderWeather();
 }
 
@@ -278,13 +297,13 @@ function applyManualCoordinates() {
   const lon = parseFloat(document.getElementById("manual-lon").value);
 
   if (isNaN(lat) || isNaN(lon) || lat < -90 || lat > 90 || lon < -180 || lon > 180) {
-    alert("Por favor, insira coordenadas válidas (Lat -90 a 90, Lon -180 a 180).");
+    alert(appLang === 'en' ? "Please enter valid coordinates (Lat -90 to 90, Lon -180 to 180)." : (appLang === 'es' ? "Por favor, ingrese coordenadas válidas (Lat -90 a 90, Lon -180 a 180)." : "Por favor, insira coordenadas válidas (Lat -90 a 90, Lon -180 a 180)."));
     return;
   }
 
   currentLat = lat;
   currentLon = lon;
-  currentLocationName = `Coordenadas: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+  currentLocationName = `${appLang === 'en' ? 'Coordinates' : (appLang === 'es' ? 'Coordenadas' : 'Coordenadas')}: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
   updateCoordinatesUI();
   
   document.getElementById("settings-modal").classList.add("hidden");
@@ -424,16 +443,14 @@ async function fetchAndRenderWeather() {
     const data = await WeatherServices.fetchOpenMeteoMultiModel(currentLat, currentLon);
     weatherData = data;
 
-    // 2. Se houver chave do OpenWeatherMap, tenta buscar também
-    if (openWeatherApiKey) {
-      try {
-        const owmData = await WeatherServices.fetchOpenWeatherMap(currentLat, currentLon, openWeatherApiKey);
-        if (owmData) {
-          weatherData["openweathermap"] = owmData;
-        }
-      } catch (err) {
-        console.error("Falha ao integrar OpenWeatherMap:", err.message);
-        showNotification("Erro na chave do OpenWeatherMap. Usando apenas fontes grátis.");
+    // Atualizar Altitude (Elevação)
+    if (weatherData && weatherData["best_match"]) {
+      const elevation = weatherData["best_match"].elevation;
+      if (elevation !== undefined && elevation !== null) {
+        document.getElementById("current-elevation").textContent = Math.round(elevation);
+        document.getElementById("altitude-info").classList.remove("hidden");
+      } else {
+        document.getElementById("altitude-info").classList.add("hidden");
       }
     }
 
@@ -463,6 +480,7 @@ function showLoadingState() {
   document.getElementById("detail-humidity").textContent = "--";
   document.getElementById("detail-pressure").textContent = "--";
   document.getElementById("detail-rain").textContent = "--";
+  document.getElementById("altitude-info").classList.add("hidden");
   
   // Renderiza skeletons nas abas
   const tabsContainer = document.getElementById("days-tabs");
@@ -511,8 +529,9 @@ function renderDaysTabs() {
     const dateObj = new Date(day.date + "T00:00:00");
     
     // Formatação de Dias da Semana
-    const weekday = dateObj.toLocaleDateString("pt-BR", { weekday: "short" }).replace(".", "");
-    const formattedDate = dateObj.toLocaleDateString("pt-BR", { day: "numeric", month: "short" }).replace(".", "");
+    const localeStr = appLang === 'pt' ? 'pt-BR' : (appLang === 'es' ? 'es-ES' : 'en-US');
+    const weekday = dateObj.toLocaleDateString(localeStr, { weekday: "short" }).replace(".", "");
+    const formattedDate = dateObj.toLocaleDateString(localeStr, { day: "numeric", month: "short" }).replace(".", "");
 
     const tabBtn = document.createElement("button");
     tabBtn.className = `day-tab-btn ${index === activeDayIndex ? "active" : ""}`;
@@ -521,7 +540,7 @@ function renderDaysTabs() {
     const wmoTranslation = WMO_CODES[day.conditionCode] || { icon: "cloud" };
 
     tabBtn.innerHTML = `
-      <span class="day-name">${index === 0 ? "Hoje" : capitalize(weekday)}</span>
+      <span class="day-name">${index === 0 ? (TRANSLATIONS[appLang]["card-today"] || "Hoje") : capitalize(weekday)}</span>
       <span class="day-date">${formattedDate}</span>
       <i data-lucide="${wmoTranslation.icon}" class="day-icon"></i>
       <div class="day-temps">
@@ -558,11 +577,13 @@ function renderDetailedCard() {
   
   // Rótulo superior do dia selecionado
   const dateObj = new Date(currentModelData.daily[activeDayIndex].date + "T00:00:00");
+  const localeStr = appLang === 'pt' ? 'pt-BR' : (appLang === 'es' ? 'es-ES' : 'en-US');
   const friendlyDayStr = activeDayIndex === 0 
-    ? "Hoje" 
-    : capitalize(dateObj.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" }));
+    ? (TRANSLATIONS[appLang]["card-today"] || "Hoje") 
+    : capitalize(dateObj.toLocaleDateString(localeStr, { weekday: "long", day: "numeric", month: "long" }));
   
   document.getElementById("detail-day-label").textContent = friendlyDayStr;
+  document.getElementById("detail-city-label").textContent = currentLocationName;
   document.getElementById("detail-provider-badge").textContent = currentModelData.provider;
 
   // Se for "Hoje" (index 0), mostramos dados em tempo real da API
@@ -601,7 +622,7 @@ function renderDetailedCard() {
     }
 
     conditionCode = dailyInfo.conditionCode;
-    conditionText = WMO_CODES[conditionCode]?.text || "Instável";
+    conditionText = translateWMO(conditionCode).text;
   }
 
   // Preencher DOM
@@ -610,11 +631,12 @@ function renderDetailedCard() {
   
   // Ajuste do rótulo Sensação vs Mínima
   const feelsSpan = document.getElementById("detail-feels");
+  const langData = TRANSLATIONS[appLang] || TRANSLATIONS.pt;
   if (isToday) {
-    document.querySelector(".feels-like-text").childNodes[0].textContent = "Sensação: ";
+    document.querySelector(".feels-like-text").childNodes[0].textContent = langData["feels-like"];
     feelsSpan.textContent = formatTemp(feelsLike);
   } else {
-    document.querySelector(".feels-like-text").childNodes[0].textContent = "Mínima: ";
+    document.querySelector(".feels-like-text").childNodes[0].textContent = langData["min-temp"];
     feelsSpan.textContent = formatTemp(feelsLike);
   }
 
@@ -624,6 +646,28 @@ function renderDetailedCard() {
   
   // Chance de Chuva (Máxima do dia)
   document.getElementById("detail-rain").textContent = `${currentModelData.daily[activeDayIndex].rainProb}%`;
+
+  // Calcular hora que inicia a chuva (primeira hora com prob >= 30%)
+  const targetDate = currentModelData.daily[activeDayIndex].date;
+  const dayHours = currentModelData.hourly.filter(h => h.time.startsWith(targetDate));
+  let rainStartHour = null;
+  
+  for (let i = 0; i < dayHours.length; i++) {
+    if (dayHours[i].rainProb >= 30) {
+      const hourPart = dayHours[i].time.split("T")[1];
+      rainStartHour = hourPart.substring(0, 5);
+      break;
+    }
+  }
+  
+  const rainSubElement = document.getElementById("detail-rain-sub");
+  if (rainStartHour) {
+    rainSubElement.textContent = `${langData["rain-starts"]}${rainStartHour}`;
+    rainSubElement.style.color = "var(--color-ecmwf)";
+  } else {
+    rainSubElement.textContent = langData["rain-none"];
+    rainSubElement.style.color = "var(--text-muted)";
+  }
 
   // Ícone
   const weatherIcon = document.getElementById("detail-icon");
@@ -676,12 +720,6 @@ function renderHourlyChart() {
       borderColor: "#a855f7",
       backgroundColor: "rgba(168, 85, 247, 0.05)",
       toggleId: "toggle-icon"
-    },
-    openweathermap: {
-      label: "OpenWeatherMap",
-      borderColor: "#f59e0b",
-      backgroundColor: "rgba(245, 158, 11, 0.05)",
-      toggleId: "toggle-owm"
     }
   };
 

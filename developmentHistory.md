@@ -75,3 +75,51 @@ Este documento registra a evolução do projeto **Minuano, clima e tempo**, deta
 ### 10. Correção de Segurança (Secret Scanning)
 * **Objetivo**: Remover a chave de API exposta para passar na proteção do GitHub (Push Protection).
 * **Solução**: Removida a chave hardcoded no arquivo `app.js` e reescrito o commit raiz (`git commit --amend`) para apagar a credencial do histórico do Git.
+
+### 11. Transição 100% Keyless (Remoção do OpenWeatherMap)
+* **Objetivo**: Tornar a aplicação totalmente independente de chaves de API externas, garantindo que o código seja 100% seguro para hospedagem pública no Git, sem chaves e plug-and-play para qualquer usuário.
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Removidos a aba `tab-openweathermap` do seletor, o checkbox `toggle-owm` do gráfico e a seção "Chaves de API Opcionais" no modal de configurações.
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Removidas regras inativas de estilos relacionadas ao OpenWeatherMap (`.owm-color`).
+  * **Serviços ([weather-services.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/weather-services.js))**: Excluídas as funções `fetchOpenWeatherMap` e `mapOWMCodeToWMO`.
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Removidas as variáveis globais de chaves de API, a checagem no `loadSettings()` e `saveSettings()`, as condicionais em `fetchAndRenderWeather()` e as configurações de renderização da linha correspondente do OpenWeatherMap no Chart.js.
+
+### 12. Nome da Localidade no Cartão Hoje/Detalhado
+* **Objetivo**: Facilitar a visualização de qual localidade pertence a previsão detalhada diretamente no cartão esquerdo.
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Envolvida a aba de dia em um container `.card-header-titles` contendo o rótulo do dia e um novo elemento `<span class="selected-city-label" id="detail-city-label">`.
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Adicionada a estilização para `.card-header-titles` (flexbox vertical) e `.selected-city-label` (cor secundária e tamanho 13px).
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Atualizada a função `renderDetailedCard()` para preencher dinamicamente o textContent de `#detail-city-label` com o valor de `currentLocationName`.
+
+### 13. Horário de Início da Chuva
+* **Objetivo**: Mostrar a que hora do dia a chuva deve iniciar para ajudar a planejar atividades ao ar livre.
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Adicionado um elemento `<span class="metric-sub" id="detail-rain-sub">` abaixo do valor da probabilidade de chuva no item de métrica.
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Adicionada a estilização para `.metric-sub` (tamanho 10px, margem superior de 1px).
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Adicionada lógica de varredura das 24 horas do dia ativo na função `renderDetailedCard()`. A hora da primeira ocorrência onde a probabilidade de chuva é maior ou igual a 30% é extraída e exibida como o início da chuva (ex: "Início: 14:00"). Se a máxima diária for inferior, exibe "Sem chuva".
+
+### 14. Alinhamento dos Painéis Principais (Cartões)
+* **Objetivo**: Corrigir o desalinhamento vertical do topo entre o cartão de clima detalhado e o gráfico horários (o cartão esquerdo começava mais abaixo devido ao seletor de modelos posicionado acima dele).
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Movido o contêiner de seleção de fontes/provedores `.provider-tabs-wrapper` para dentro do cartão detalhado de clima `.weather-detail-card`. Agora, ambos os cartões principais começam no mesmo nível do grid, garantindo simetria perfeita.
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Removida a margem inferior redundante do `.provider-tabs-wrapper` (`margin-bottom: 0`), já que o próprio gap vertical interno do cartão (`gap: 24px`) gerencia o espaçamento de forma proporcional.
+
+### 15. Redução de tamanho da etiqueta de provedor (badge)
+* **Objetivo**: Tornar a etiqueta de identificação do modelo/provedor de dados (`.provider-badge`) mais discreta e equilibrada na interface.
+* **Solução**:
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Reduzido o tamanho da fonte de `11px` para `9px` e o padding interno de `4px 10px` para `3px 8px`.
+
+### 16. Exibição da Altitude (Elevação) do Local
+* **Objetivo**: Mostrar a altitude da localidade selecionada em metros, uma informação valiosa em regiões serranas (como a Serra Gaúcha).
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Adicionado um elemento `<span id="altitude-info">` na barra de status de coordenadas para exibir a elevação.
+  * **Serviços ([weather-services.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/weather-services.js))**: Adicionada a leitura do campo `elevation` presente na raiz da resposta JSON do Open-Meteo e repassada na resposta padronizada de cada modelo.
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Modificado o `fetchAndRenderWeather()` para ler o valor de `elevation` do modelo ativo, atualizando o conteúdo de `#current-elevation` e tornando o container visível (removendo `.hidden`). Adicionada a ocultação do elemento no `showLoadingState()`.
+
+### 17. Opção de Idioma Configurável (PT-BR, EN, ES)
+* **Objetivo**: Permitir que o usuário selecione e alterne o idioma do aplicativo entre Português, Inglês e Espanhol no menu de configurações.
+* **Solução**:
+  * **Traduções ([translations.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/translations.js))**: Novo arquivo com dicionário estruturado de chaves para as strings de interface em `pt`, `en` e `es`, além dos nomes dos dias da semana.
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Adicionada a opção de escolha `<select id="app-lang-select">` no menu de configurações, importado o script `translations.js` e adicionados atributos `data-i18n` aos elementos estáticos de texto.
+  * **Serviços ([weather-services.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/weather-services.js))**: Modificado `WMO_CODES` e a função `translateWMO()` para traduzir a condição climática em tempo real baseado no `window.appLang` selecionado.
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Criada a variável global `appLang` de estado, adicionada a função `applyTranslations()` para varrer elementos `data-i18n` e placeholders. Ajustada a formatação de datas via `toLocaleDateString` baseado no locale do idioma ativo. Adaptados os textos das notificações flutuantes (toasts) e alertas para os idiomas suportados.

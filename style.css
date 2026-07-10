@@ -529,7 +529,7 @@ body {
    8. Coluna Esquerda: Cartão Detalhado & Provedores
    ---------------------------------------------------- */
 .provider-tabs-wrapper {
-  margin-bottom: 12px;
+  margin-bottom: 0;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -588,18 +588,31 @@ body {
   align-items: center;
 }
 
+.card-header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.selected-city-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
 .selected-day-label {
   font-size: 20px;
   font-weight: 700;
 }
 
 .provider-badge {
-  font-size: 11px;
+  font-size: 9px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.8px;
   background: rgba(255, 255, 255, 0.08);
-  padding: 4px 10px;
+  padding: 3px 8px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
@@ -739,6 +752,13 @@ body {
   color: var(--text-main);
 }
 
+.metric-sub {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-ecmwf);
+  margin-top: 1px;
+}
+
 /* ----------------------------------------------------
    9. Coluna Direita: Painel do Gráfico
    ---------------------------------------------------- */
@@ -823,9 +843,6 @@ body {
 }
 .toggle-checkbox input:checked ~ .icon-color {
   border-color: var(--color-icon);
-}
-.toggle-checkbox input:checked ~ .owm-color {
-  border-color: var(--color-owm);
 }
 
 /* Container do Canvas do Gráfico */

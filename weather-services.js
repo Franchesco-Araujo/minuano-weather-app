@@ -31,41 +31,46 @@
 
 // Mapeamento de Códigos de Clima da Organização Meteorológica Mundial (WMO)
 const WMO_CODES = {
-  0: { text: "Céu Limpo", icon: "sun" },
-  1: { text: "Principalmente Limpo", icon: "cloud-sun" },
-  2: { text: "Parcialmente Nublado", icon: "cloud-sun" },
-  3: { text: "Encoberto", icon: "cloud" },
-  45: { text: "Neblina", icon: "cloud-drizzle" },
-  48: { text: "Neblina Congelante", icon: "cloud-drizzle" },
-  51: { text: "Garoa Leve", icon: "cloud-drizzle" },
-  53: { text: "Garoa Moderada", icon: "cloud-drizzle" },
-  55: { text: "Garoa Densa", icon: "cloud-drizzle" },
-  56: { text: "Garoa Congelante Leve", icon: "snowflake" },
-  57: { text: "Garoa Congelante Densa", icon: "snowflake" },
-  61: { text: "Chuva Fraca", icon: "cloud-rain" },
-  63: { text: "Chuva Moderada", icon: "cloud-rain" },
-  65: { text: "Chuva Forte", icon: "cloud-rain" },
-  66: { text: "Chuva Congelante Leve", icon: "snowflake" },
-  67: { text: "Chuva Congelante Forte", icon: "snowflake" },
-  71: { text: "Neve Fraca", icon: "snowflake" },
-  73: { text: "Neve Moderada", icon: "snowflake" },
-  75: { text: "Neve Forte", icon: "snowflake" },
-  77: { text: "Grãos de Neve", icon: "snowflake" },
-  80: { text: "Pancadas de Chuva Fraca", icon: "cloud-rain" },
-  81: { text: "Pancadas de Chuva Moderada", icon: "cloud-rain" },
-  82: { text: "Pancadas de Chuva Violenta", icon: "cloud-lightning" },
-  85: { text: "Pancadas de Neve Fraca", icon: "snowflake" },
-  86: { text: "Pancadas de Neve Forte", icon: "snowflake" },
-  95: { text: "Trovoada", icon: "cloud-lightning" },
-  96: { text: "Trovoada com Granizo Leve", icon: "cloud-lightning" },
-  99: { text: "Trovoada com Granizo Forte", icon: "cloud-lightning" }
+  0: { pt: "Céu Limpo", en: "Clear Sky", es: "Cielo Despejado", icon: "sun" },
+  1: { pt: "Principalmente Limpo", en: "Mainly Clear", es: "Mayormente Despejado", icon: "cloud-sun" },
+  2: { pt: "Parcialmente Nublado", en: "Partly Cloudy", es: "Parcialmente Nublado", icon: "cloud-sun" },
+  3: { pt: "Encoberto", en: "Overcast", es: "Cubierto", icon: "cloud" },
+  45: { pt: "Neblina", en: "Fog", es: "Niebla", icon: "cloud-drizzle" },
+  48: { pt: "Neblina Congelante", en: "Ice Fog", es: "Niebla Helada", icon: "cloud-drizzle" },
+  51: { pt: "Garoa Leve", en: "Light Drizzle", es: "Llovizna Ligera", icon: "cloud-drizzle" },
+  53: { pt: "Garoa Moderada", en: "Moderate Drizzle", es: "Llovizna Moderada", icon: "cloud-drizzle" },
+  55: { pt: "Garoa Densa", en: "Dense Drizzle", es: "Llovizna Densa", icon: "cloud-drizzle" },
+  56: { pt: "Garoa Congelante Leve", en: "Light Freezing Drizzle", es: "Llovizna Helada Ligera", icon: "snowflake" },
+  57: { pt: "Garoa Congelante Densa", en: "Dense Freezing Drizzle", es: "Llovizna Helada Densa", icon: "snowflake" },
+  61: { pt: "Chuva Fraca", en: "Slight Rain", es: "Lluvia Ligera", icon: "cloud-rain" },
+  63: { pt: "Chuva Moderada", en: "Moderate Rain", es: "Lluvia Moderada", icon: "cloud-rain" },
+  65: { pt: "Chuva Forte", en: "Heavy Rain", es: "Lluvia Fuerte", icon: "cloud-rain" },
+  66: { pt: "Chuva Congelante Leve", en: "Light Freezing Rain", es: "Lluvia Helada Ligera", icon: "snowflake" },
+  67: { pt: "Chuva Congelante Forte", en: "Heavy Freezing Rain", es: "Lluvia Helada Fuerte", icon: "snowflake" },
+  71: { pt: "Neve Fraca", en: "Slight Snow", es: "Nieve Ligera", icon: "snowflake" },
+  73: { pt: "Neve Moderada", en: "Moderate Snow", es: "Nieve Moderada", icon: "snowflake" },
+  75: { pt: "Neve Forte", en: "Heavy Snow", es: "Nieve Fuerte", icon: "snowflake" },
+  77: { pt: "Grãos de Neve", en: "Snow Grains", es: "Granos de Nieve", icon: "snowflake" },
+  80: { pt: "Pancadas de Chuva Fraca", en: "Slight Rain Showers", es: "Chubascos Ligeros", icon: "cloud-rain" },
+  81: { pt: "Pancadas de Chuva Moderada", en: "Moderate Rain Showers", es: "Chubascos Moderados", icon: "cloud-rain" },
+  82: { pt: "Pancadas de Chuva Violenta", en: "Violent Rain Showers", es: "Chubascos Violentos", icon: "cloud-lightning" },
+  85: { pt: "Pancadas de Neve Fraca", en: "Slight Snow Showers", es: "Chubascos de Nieve Ligeros", icon: "snowflake" },
+  86: { pt: "Pancadas de Neve Forte", en: "Heavy Snow Showers", es: "Chubascos de Nieve Fuertes", icon: "snowflake" },
+  95: { pt: "Trovoada", en: "Thunderstorm", es: "Tormenta", icon: "cloud-lightning" },
+  96: { pt: "Trovoada com Granizo Leve", en: "Thunderstorm with Slight Hail", es: "Tormenta con Granizo Ligero", icon: "cloud-lightning" },
+  99: { pt: "Trovoada com Granizo Forte", en: "Thunderstorm with Heavy Hail", es: "Tormenta con Granizo Fuerte", icon: "cloud-lightning" }
 };
 
 /**
  * Traduz o código WMO em texto descritivo e ícone.
  */
 function translateWMO(code) {
-  return WMO_CODES[code] || { text: "Desconhecido", icon: "cloud" };
+  const lang = window.appLang || "pt";
+  const entry = WMO_CODES[code] || { pt: "Desconhecido", en: "Unknown", es: "Desconocido", icon: "cloud" };
+  return {
+    text: entry[lang] || entry.pt,
+    icon: entry.icon
+  };
 }
 
 const WeatherServices = {
@@ -148,6 +153,7 @@ const WeatherServices = {
         // Construindo a resposta padronizada para este modelo
         results[model] = {
           provider: friendlyName,
+          elevation: data.elevation,
           current: {
             temp: Math.round(currentData.temperature_2m),
             feelsLike: Math.round(currentData.apparent_temperature),
@@ -178,104 +184,6 @@ const WeatherServices = {
       console.error("Erro ao buscar previsões multimodelos:", error);
       throw error;
     }
-  },
-
-  /**
-   * Busca previsão do tempo no OpenWeatherMap caso o usuário possua uma chave.
-   * 
-   * @param {number} lat Latitude
-   * @param {number} lon Longitude
-   * @param {string} apiKey Chave de API do usuário
-   * @returns {Promise<Object>} Dados meteorológicos formatados
-   */
-  async fetchOpenWeatherMap(lat, lon, apiKey) {
-    if (!apiKey) return null;
-
-    // URL para previsão de 5 dias/3 horas (Grátis sem cadastro de cartão)
-    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric&lang=pt_br`;
-
-    try {
-      const response = await fetch(url);
-      if (!response.ok) throw new Error("Chave de API inválida ou limite excedido no OpenWeatherMap.");
-      const data = await response.json();
-
-      // O OpenWeatherMap retorna uma lista de previsões de 3 em 3 horas.
-      // O primeiro item representa o clima mais próximo do atual.
-      const currentRaw = data.list[0];
-      
-      // Agrupar previsões por dia para obter máximas/mínimas
-      const dailyMap = {};
-      const hourlyList = [];
-
-      data.list.forEach(item => {
-        // Pegar apenas a data YYYY-MM-DD
-        const dateStr = item.dt_txt.split(" ")[0];
-        
-        // Mapear previsão horária para nossa estrutura
-        // Nota: O OpenWeatherMap usa seus próprios IDs de condição. Mapearemos de forma simples para WMO
-        const owmId = item.weather[0].id;
-        const wmoCode = mapOWMCodeToWMO(owmId);
-
-        hourlyList.push({
-          time: item.dt_txt.replace(" ", "T").substring(0, 16),
-          temp: Math.round(item.main.temp),
-          rainProb: Math.round((item.pop || 0) * 100), // pop é probabilidade de 0 a 1
-          conditionCode: wmoCode
-        });
-
-        // Agrupar máximas e mínimas para o dia
-        if (!dailyMap[dateStr]) {
-          dailyMap[dateStr] = {
-            temps: [],
-            rainProbs: [],
-            codes: []
-          };
-        }
-        dailyMap[dateStr].temps.push(item.main.temp);
-        dailyMap[dateStr].rainProbs.push(item.pop || 0);
-        dailyMap[dateStr].codes.push(wmoCode);
-      });
-
-      // Construindo a previsão diária baseada nos agrupamentos de 3 horas
-      const dailyList = Object.keys(dailyMap).map(date => {
-        const dayData = dailyMap[date];
-        const maxTemp = Math.max(...dayData.temps);
-        const minTemp = Math.min(...dayData.temps);
-        const maxRainProb = Math.max(...dayData.rainProbs) * 100;
-        
-        // Usar o código meteorológico mais frequente no dia
-        const mostFrequentCode = dayData.codes.reduce((a, b, i, arr) => 
-          (arr.filter(v => v === a).length >= arr.filter(v => v === b).length ? a : b), 
-          dayData.codes[0]
-        );
-
-        return {
-          date: date,
-          maxTemp: Math.round(maxTemp),
-          minTemp: Math.round(minTemp),
-          conditionCode: mostFrequentCode,
-          rainProb: Math.round(maxRainProb)
-        };
-      });
-
-      return {
-        provider: "OpenWeatherMap",
-        current: {
-          temp: Math.round(currentRaw.main.temp),
-          feelsLike: Math.round(currentRaw.main.feels_like),
-          humidity: currentRaw.main.humidity,
-          windSpeed: Math.round(currentRaw.wind.speed * 3.6), // m/s para km/h
-          pressure: currentRaw.main.pressure,
-          conditionCode: mapOWMCodeToWMO(currentRaw.weather[0].id),
-          conditionText: capitalize(currentRaw.weather[0].description)
-        },
-        daily: dailyList.slice(0, 5), // O API grátis cobre 5 dias
-        hourly: hourlyList
-      };
-    } catch (error) {
-      console.error("Erro no OpenWeatherMap:", error);
-      throw error;
-    }
   }
 };
 
@@ -285,23 +193,4 @@ const WeatherServices = {
 function capitalize(str) {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-/**
- * Mapeia códigos de clima do OpenWeatherMap (2xx-8xx) para os códigos WMO correspondentes.
- */
-function mapOWMCodeToWMO(owmId) {
-  if (owmId >= 200 && owmId < 300) return 95; // Tempestades
-  if (owmId >= 300 && owmId < 400) return 51; // Garoa
-  if (owmId >= 500 && owmId < 600) {
-    if (owmId === 500 || owmId === 501) return 61; // Chuva leve/mod
-    return 65; // Chuva forte
-  }
-  if (owmId >= 600 && owmId < 700) return 73; // Neve
-  if (owmId === 701 || owmId === 741) return 45; // Neblina
-  if (owmId === 800) return 0; // Céu limpo
-  if (owmId === 801) return 1; // Poucas nuvens
-  if (owmId === 802) return 2; // Parcialmente nublado
-  if (owmId === 803 || owmId === 804) return 3; // Encoberto
-  return 3; // Padrão nublado
 }
