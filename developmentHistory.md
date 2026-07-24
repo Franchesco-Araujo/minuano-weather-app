@@ -123,3 +123,60 @@ Este documento registra a evolução do projeto **Minuano, clima e tempo**, deta
   * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Adicionada a opção de escolha `<select id="app-lang-select">` no menu de configurações, importado o script `translations.js` e adicionados atributos `data-i18n` aos elementos estáticos de texto.
   * **Serviços ([weather-services.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/weather-services.js))**: Modificado `WMO_CODES` e a função `translateWMO()` para traduzir a condição climática em tempo real baseado no `window.appLang` selecionado.
   * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Criada a variável global `appLang` de estado, adicionada a função `applyTranslations()` para varrer elementos `data-i18n` e placeholders. Ajustada a formatação de datas via `toLocaleDateString` baseado no locale do idioma ativo. Adaptados os textos das notificações flutuantes (toasts) e alertas para os idiomas suportados.
+
+### 18. Pinagem de Localização Direta no Mapa (Clique no Mapa)
+* **Objetivo**: Permitir que o usuário defina as coordenadas e consulte a previsão do tempo clicando em qualquer ponto no mapa interativo.
+* **Solução**:
+  * **Traduções ([translations.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/translations.js))**: Adicionada a chave de tradução `map-coordinates` para suportar rótulos localizados (ex: "Coordenadas do Mapa", "Map Coordinates", "Coordenadas del Mapa").
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Adicionado um ouvinte de evento `click` no `mapInstance` do Leaflet na função `initMap()`. Ao clicar, as coordenadas globais `currentLat` e `currentLon` são atualizadas, o marcador visual é reposicionado com `markerInstance.setLatLng()`, o nome da localidade é atualizado com o rótulo traduzido, a UI da barra superior de coordenadas é redesenhada e uma nova previsão é buscada na hora com `fetchAndRenderWeather()`.
+
+### 19. Opção de Tema Geral (Claro e Escuro) para o Site
+* **Objetivo**: Implementar suporte completo a temas visuais Claro (Premium Light) e Escuro (Premium Dark) para o site inteiro, selecionável pelo usuário no menu.
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Adicionado o controle de seleção `<select id="site-theme-select">` no modal de configurações.
+  * **Traduções ([translations.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/translations.js))**: Adicionadas as chaves de tradução correspondentes ao seletor de aparência do site para suporte a múltiplos idiomas.
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Criados overrides sob a classe `body.light-theme` alterando as variáveis do sistema de design (fundo dos cards, cores dos textos, bordas, sombras e os degradês de planos de fundo baseados no clima). Criados os estilos e contrastes ideais para caixas de seleção, resultados de busca, barras de status, botões ativos/inativos e gradiente de texto grande no modo claro.
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Adicionada a variável `siteTheme` de estado, persistida em `localStorage`. Configurado o carregamento e salvamento do tema para adicionar/remover a classe `.light-theme` no elemento body. Modificado o gerador do gráfico do Chart.js para alterar dinamicamente a paleta de cores dos eixos (grades e fontes) e estilo do tooltip flutuante ao salvar a aparência.
+
+### 20. Efeitos Atmosféricos Dinâmicos de Chuva e Nuvens no Plano de Fundo
+* **Objetivo**: Adicionar nuvens e chuva caindo no fundo da tela quando a probabilidade de chuva do dia selecionado passar de 40%.
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Adicionadas as divs `#clouds-overlay` e `#rain-overlay` dentro do container `#dynamic-bg`.
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Criados estilos de animação CSS premium. As nuvens utilizam gradientes radiais suaves desfocados com `filter: blur()` flutuando lentamente pela tela. A chuva utiliza traços inclinados (15°) com opacidades variadas que caem do topo ao rodapé. Adaptadas as cores dos elementos nos temas Claro e Escuro.
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Adicionada a função `updateWeatherOverlays(rainProb)` chamada no final de `updateDynamicBackground()`. Se a probabilidade do dia selecionado for maior que 40%, ela remove a classe `hidden` e gera dinamicamente múltiplos elementos de nuvens (com tamanhos, alturas e delays aleatórios para iniciar em fases diferentes) e gotas de chuva (com inclinações, opacidades e delays aleatórios). Caso contrário, oculta e limpa o DOM para manter a performance ideal de renderização. Sincronizada a atualização das nuvens e chuvas ao trocar de provedor e ao trocar de dia nas abas.
+
+### 21. Efeitos Atmosféricos Adicionais: Sol Brilhando e Nuvens Sem Chuva
+* **Objetivo**: Adicionar um efeito visual de sol brilhando pulsante em dias ensolarados, e mostrar apenas nuvens flutuantes (sem chuva) em dias nublados, além de fazer com que o plano de fundo gradiente mude dinamicamente para corresponder ao dia selecionado.
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Adicionada a div `#sun-overlay` dentro de `#dynamic-bg`.
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Criada a estilização para `.sun-overlay` com um gradiente radial gigante e suave posicionado no canto superior direito, com animação `@keyframes pulseSun` para gerar um efeito dinâmico e sutil de pulsação luminosa (adaptada para temas Claro e Escuro).
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**: Modificado `updateDynamicBackground()` para aplicar o tema do gradiente com base no código WMO do **dia selecionado** em vez de fixar no clima de hoje. Atualizada a função `updateWeatherOverlays()` para gerenciar três estados atmosféricos: Sol (ensolarado), Nuvens (nublado) e Chuva (nublado + chuva), ativando-os e limpando-os sob demanda conforme o código WMO correspondente ao dia selecionado e a probabilidade de precipitação.
+
+### 22. Correção de Nome Duplicado (Minuano) no Cabeçalho
+* **Objetivo**: Evitar a duplicação do nome "Minuano" no título do cabeçalho da página devido à aplicação dinâmica de traduções.
+* **Solução**:
+  * **Traduções ([translations.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/translations.js))**: Removido a string estática "Minuano" do início da chave `app-subtitle` em todas as traduções (`pt`, `en`, `es`). Dessa forma, a tradução do subtítulo injeta apenas o texto complementar (ex: `, clima e tempo`), mantendo o nome principal estático no HTML principal.
+
+### 23. Calendário Agrícola & Lunar Interativo (Culturas do Sul)
+* **Objetivo**: Adicionar uma nova seção interativa abaixo do mapa dedicada ao cultivo de plantas típicas da Região Sul (RS), exibindo épocas de cultivo, dicas e a fase da lua ideal, além de calcular a fase lunar atual e fornecer recomendações de adubação, poda e plantio.
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Criada a estrutura da seção `agricultural-section` contendo um cabeçalho, um cartão dinâmico de informações lunares (`#moon-phase-card`), filtros de botões por categoria e um menu de seleção de filtragem por mês.
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Criada uma estilização elegante e responsiva para o calendário agrícola. Os cartões de culturas usam efeitos de foco de escala e cores de categorias personalizadas (Frutífera, Hortaliça, Tubérculo, Cereal, Leguminosa). O cartão lunar tem destaque com um ícone de lua brilhante amarelo pulsante.
+  * **Traduções ([translations.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/translations.js))**: Adicionadas todas as traduções de títulos da seção, botões de categorias, nomes dos meses e strings auxiliares para Português, Inglês e Espanhol.
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**:
+    * Criada a constante global `CROPS_DATA` contendo as informações das culturas do Sul (Uva, Couve, Batata, Milho, Cebola, Feijão, Pêssego e Tomate) com textos localizados.
+    * Criada a função `getMoonPhaseInfo(date)` que calcula dinamicamente a fase da lua para a data de hoje baseada em ciclos sinódicos lunares e retorna dicas agrícolas tradicionais para a lua correspondente.
+    * Criada a função `renderAgriculturalCalendar()` que filtra a lista de cultivos pelas opções selecionadas e monta dinamicamente os cartões com os ícones Lucide correspondentes (ex: `grape` para Uva, `leaf` para Hortaliças, `sprout` para Leguminosas, etc.).
+    * Sincronizada a atualização da seção e dos textos traduzidos no carregamento da página, no clique dos filtros e nas trocas de idiomas do menu.
+
+### 24. Expansão de Banco de Dados de Culturas e Barra de Pesquisa Reativa
+* **Objetivo**: Adicionar novas culturas típicas do Sul recomendadas pelo usuário e implementar uma barra de busca para filtrar culturas dinamicamente por texto.
+* **Solução**:
+  * **HTML ([index.html](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/index.html))**: Adicionado o campo de busca de texto `#agro-search-input` dentro da barra de filtros.
+  * **CSS ([style.css](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/style.css))**: Adicionada a estilização para `.agro-search-wrapper` e `.agro-search-icon` com um visual moderno em formato de pílula integrada aos filtros e com foco dinâmico.
+  * **Traduções ([translations.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/translations.js))**: Adicionada a tradução `"agro-search-placeholder"` para PT, EN e ES.
+  * **JS ([app.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/app.js))**:
+    * Expandido o array `CROPS_DATA` com novas culturas: **Maçã, Banana, Caqui, Repolho, Cenoura, Alface, Mandioca, Laranja, Bergamota, Figo, Noz Pecã, Café e Açaí**, contendo suas respectivas particularidades de solo, fase lunar, época de plantio e sensibilidade ao clima do Sul.
+    * Implementada a lógica de filtragem por caixa de texto na função `renderAgriculturalCalendar()` para filtrar no dígito (`input` event listener).
+    * Atualizado o placeholder traduzido na troca de idiomas em `applyTranslations()`.
+

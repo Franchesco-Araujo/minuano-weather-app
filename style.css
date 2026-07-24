@@ -56,6 +56,109 @@ body {
   overflow-x: hidden;
 }
 
+body.light-theme {
+  --bg-dark: #f1f5f9;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --glass-bg: rgba(255, 255, 255, 0.75);
+  --glass-bg-hover: rgba(255, 255, 255, 0.90);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --glass-border-focus: rgba(255, 107, 74, 0.5);
+  --glass-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.2);
+}
+
+/* Sobrescritas para o Tema Claro do App */
+body.light-theme #dynamic-bg.bg-gradient-clear {
+  background: radial-gradient(circle at 80% 20%, rgba(224, 242, 254, 0.6) 0%, rgba(255, 255, 255, 0) 60%),
+              radial-gradient(circle at 15% 85%, rgba(254, 215, 170, 0.4) 0%, rgba(255, 255, 255, 0) 50%),
+              linear-gradient(135deg, #bae6fd 0%, #f1f5f9 100%);
+}
+
+body.light-theme #dynamic-bg.bg-gradient-rain {
+  background: radial-gradient(circle at 10% 10%, rgba(203, 213, 225, 0.6) 0%, rgba(255, 255, 255, 0) 70%),
+              linear-gradient(135deg, #94a3b8 0%, #e2e8f0 100%);
+}
+
+body.light-theme #dynamic-bg.bg-gradient-cloudy {
+  background: radial-gradient(circle at 50% 10%, rgba(226, 232, 240, 0.7) 0%, rgba(255, 255, 255, 0) 80%),
+              linear-gradient(135deg, #cbd5e1 0%, #f1f5f9 100%);
+}
+
+body.light-theme #dynamic-bg.bg-gradient-default {
+  background: radial-gradient(circle at 75% 15%, rgba(238, 242, 255, 0.6) 0%, rgba(255, 255, 255, 0) 60%),
+              radial-gradient(circle at 15% 85%, rgba(254, 228, 226, 0.4) 0%, rgba(255, 255, 255, 0) 50%),
+              linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
+}
+
+body.light-theme .main-header {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+body.light-theme .provider-tabs {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+body.light-theme .provider-tab:hover {
+  background: rgba(15, 23, 42, 0.05);
+  color: var(--text-main);
+}
+
+body.light-theme .select-control,
+body.light-theme .search-input-wrapper input,
+body.light-theme .coords-row input {
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--text-main);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .select-control option {
+  background: #ffffff;
+  color: #0f172a;
+}
+
+body.light-theme .search-results-dropdown {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(15, 23, 42, 0.1);
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+}
+
+body.light-theme .result-item:hover {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+body.light-theme .day-tab-skeleton {
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.05) 25%, rgba(15, 23, 42, 0.1) 37%, rgba(15, 23, 42, 0.05) 63%);
+}
+
+body.light-theme .day-tab-btn:hover {
+  background: rgba(15, 23, 42, 0.03);
+}
+
+body.light-theme .day-tab-btn.active {
+  background: rgba(15, 23, 42, 0.05);
+  border-color: var(--color-primary);
+}
+
+body.light-theme .metric-item {
+  background: rgba(15, 23, 42, 0.02);
+  border-color: rgba(15, 23, 42, 0.03);
+}
+
+body.light-theme .metric-item:hover {
+  background: rgba(15, 23, 42, 0.04);
+  border-color: rgba(15, 23, 42, 0.06);
+}
+
+body.light-theme .metric-icon {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+body.light-theme .temp-value {
+  background: linear-gradient(to bottom, #0f172a, #334155);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 /* ----------------------------------------------------
    2. Planos de Fundo Dinâmicos (Aplicados via JS)
    ---------------------------------------------------- */
@@ -1465,6 +1568,516 @@ body {
   .btn-primary {
     padding: 8px 16px;
     font-size: 13px;
+  }
+}
+
+/* ----------------------------------------------------
+   11. Efeitos de Chuva e Nuvens Dinâmicas (Fundo)
+   ---------------------------------------------------- */
+.clouds-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.65;
+  transition: opacity 1s ease;
+  z-index: 1;
+}
+
+.cloud-element {
+  position: absolute;
+  background: radial-gradient(circle, rgba(230, 235, 245, 0.45) 0%, rgba(180, 190, 210, 0.1) 70%);
+  border-radius: 50%;
+  filter: blur(45px);
+  pointer-events: none;
+  animation: floatCloud 45s linear infinite;
+}
+
+body.light-theme .cloud-element {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(200, 215, 235, 0.3) 70%);
+}
+
+@keyframes floatCloud {
+  0% {
+    transform: translateX(-120vw);
+  }
+  100% {
+    transform: translateX(120vw);
+  }
+}
+
+.rain-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+  transition: opacity 1s ease;
+  z-index: 2;
+}
+
+.rain-drop {
+  position: absolute;
+  background: linear-gradient(transparent, rgba(186, 230, 253, 0.55));
+  width: 1.5px;
+  height: 70px;
+  pointer-events: none;
+  animation: fallRain 1.1s linear infinite;
+}
+
+body.light-theme .rain-drop {
+  background: linear-gradient(transparent, rgba(56, 189, 248, 0.65));
+}
+
+@keyframes fallRain {
+  0% {
+    transform: translateY(-90px) rotate(15deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(105vh) rotate(15deg);
+    opacity: 0;
+  }
+}
+
+.sun-overlay {
+  position: absolute;
+  top: -120px;
+  right: -120px;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(253, 224, 71, 0.28) 0%, rgba(251, 146, 60, 0.08) 50%, transparent 70%);
+  pointer-events: none;
+  filter: blur(15px);
+  z-index: 0;
+  animation: pulseSun 8s ease-in-out infinite alternate;
+}
+
+body.light-theme .sun-overlay {
+  background: radial-gradient(circle, rgba(253, 224, 71, 0.42) 0%, rgba(251, 146, 60, 0.15) 50%, transparent 70%);
+}
+
+@keyframes pulseSun {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+/* ----------------------------------------------------
+   12. Seção Agrícola & Lunar (Culturas do Sul)
+   ---------------------------------------------------- */
+.agricultural-section {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.agro-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.agro-title-area h2 {
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-main);
+}
+
+.agro-title-area h2 i {
+  color: var(--color-gfs); /* Verde */
+}
+
+.agro-title-area p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* Card Lunar */
+.moon-phase-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 12px 20px;
+  min-width: 280px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+body.light-theme .moon-phase-card {
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.moon-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  font-weight: 600;
+  display: block;
+}
+
+.moon-info-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.moon-main-icon {
+  width: 22px;
+  height: 22px;
+  color: #fef08a; /* Amarelo sol */
+  filter: drop-shadow(0 0 6px rgba(253, 224, 71, 0.5));
+}
+
+.moon-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.moon-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* Filtros */
+.agro-filters {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 16px 0;
+}
+
+.filter-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--glass-border);
+  color: var(--text-muted);
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-btn i {
+  width: 14px;
+  height: 14px;
+}
+
+body.light-theme .filter-btn {
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.filter-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+body.light-theme .filter-btn:hover {
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.filter-btn.active {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 107, 74, 0.3);
+}
+
+.filter-select-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-select-group label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Grade de Culturas */
+.crops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.crop-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: var(--transition-smooth);
+  position: relative;
+  overflow: hidden;
+}
+
+body.light-theme .crop-card {
+  background: rgba(15, 23, 42, 0.01);
+}
+
+.crop-card:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: var(--glass-shadow);
+}
+
+body.light-theme .crop-card:hover {
+  background: rgba(15, 23, 42, 0.03);
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+.crop-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.crop-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.crop-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+body.light-theme .crop-icon-wrapper {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.crop-icon-wrapper i {
+  width: 18px;
+  height: 18px;
+}
+
+.crop-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.crop-badge {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 30px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Badges de Categorias */
+.crop-badge.fruit {
+  background: rgba(239, 68, 68, 0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+.crop-badge.vegetable {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+.crop-badge.tuber {
+  background: rgba(245, 158, 11, 0.12);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+.crop-badge.cereal {
+  background: rgba(59, 130, 246, 0.12);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.crop-badge.legume {
+  background: rgba(168, 85, 247, 0.12);
+  color: #a855f7;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+/* Detalhes da Cultura */
+.crop-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.crop-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.crop-detail-row i {
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.crop-detail-row i.icon-moon {
+  color: #fde047;
+}
+
+.crop-detail-row i.icon-calendar {
+  color: var(--color-ecmwf);
+}
+
+.crop-detail-row i.icon-info {
+  color: var(--text-muted);
+}
+
+.crop-detail-label {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.crop-detail-value {
+  color: var(--text-main);
+}
+
+.crop-notes {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--glass-border);
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Responsividade Agro */
+@media (max-width: 768px) {
+  .agricultural-section {
+    padding: 16px;
+  }
+  .agro-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .moon-phase-card {
+    min-width: unset;
+  }
+  .agro-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .filter-group {
+    order: 2;
+  }
+  .filter-select-group {
+    order: 1;
+    justify-content: space-between;
+  }
+}
+
+/* Campo de busca de culturas */
+.agro-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 280px;
+}
+
+.agro-search-icon {
+  position: absolute;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.agro-search-wrapper input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border-radius: 30px;
+  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-main);
+  font-size: 13px;
+  font-family: var(--font-primary);
+  outline: none;
+  transition: var(--transition-smooth);
+}
+
+body.light-theme .agro-search-wrapper input {
+  background: rgba(15, 23, 42, 0.03);
+  border-color: rgba(15, 23, 42, 0.08);
+}
+
+.agro-search-wrapper input:focus {
+  border-color: var(--glass-border-focus);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 10px rgba(255, 107, 74, 0.15);
+}
+
+body.light-theme .agro-search-wrapper input:focus {
+  background: rgba(15, 23, 42, 0.05);
+}
+
+@media (max-width: 768px) {
+  .agro-search-wrapper {
+    width: 100%;
   }
 }
 

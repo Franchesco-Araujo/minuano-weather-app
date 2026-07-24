@@ -19,7 +19,11 @@
 <body>
 
   <!-- Plano de Fundo Dinâmico com Gradiente e Nuvens -->
-  <div id="dynamic-bg" class="bg-gradient-default"></div>
+  <div id="dynamic-bg" class="bg-gradient-default">
+    <div id="sun-overlay" class="sun-overlay hidden"></div>
+    <div id="clouds-overlay" class="clouds-overlay hidden"></div>
+    <div id="rain-overlay" class="rain-overlay hidden"></div>
+  </div>
 
   <div class="app-container">
     
@@ -208,6 +212,68 @@
       </div>
     </section>
 
+    <!-- Seção de Calendário Agrícola e Lunar -->
+    <section class="agricultural-section glass-panel">
+      <div class="agro-header">
+        <div class="agro-title-area">
+          <h2><i data-lucide="sprout"></i> <span data-i18n="agro-title">Calendário Agrícola & Lunar</span></h2>
+          <p data-i18n="agro-subtitle">Melhores momentos para cultivar na Região Sul (Serra Gaúcha)</p>
+        </div>
+        
+        <!-- Fase Lunar Atual -->
+        <div id="moon-phase-card" class="moon-phase-card">
+          <div class="moon-phase-details">
+            <span class="moon-title" data-i18n="agro-moon-phase">Fase Lunar Hoje</span>
+            <div class="moon-info-row">
+              <i id="moon-icon" data-lucide="moon" class="moon-main-icon"></i>
+              <span id="moon-name" class="moon-name">Carregando...</span>
+            </div>
+            <p id="moon-desc" class="moon-desc">Calculando influência lunar...</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros do Calendário -->
+      <div class="agro-filters">
+        <!-- Campo de Busca de Culturas -->
+        <div class="agro-search-wrapper">
+          <i data-lucide="search" class="agro-search-icon"></i>
+          <input type="text" id="agro-search-input" placeholder="Pesquisar cultura (ex: Cebola, Uva)..." autocomplete="off">
+        </div>
+
+        <div class="filter-group">
+          <button class="filter-btn active" data-type="all" data-i18n="agro-filter-all">Todas</button>
+          <button class="filter-btn" data-type="fruit" data-i18n="agro-filter-fruit"><i data-lucide="cherry"></i> Frutíferas</button>
+          <button class="filter-btn" data-type="vegetable" data-i18n="agro-filter-veg"><i data-lucide="leaf"></i> Hortaliças</button>
+          <button class="filter-btn" data-type="legume" data-i18n="agro-filter-legume"><i data-lucide="sprout"></i> Leguminosas</button>
+          <button class="filter-btn" data-type="other" data-i18n="agro-filter-other"><i data-lucide="wheat"></i> Outras</button>
+        </div>
+        <div class="filter-select-group">
+          <label for="agro-month-select" data-i18n="agro-month-label">Filtrar por Mês:</label>
+          <select id="agro-month-select" class="select-control">
+            <option value="all" data-i18n="agro-month-all">Todo o Ano</option>
+            <option value="0" data-i18n="month-0">Janeiro</option>
+            <option value="1" data-i18n="month-1">Fevereiro</option>
+            <option value="2" data-i18n="month-2">Março</option>
+            <option value="3" data-i18n="month-3">Abril</option>
+            <option value="4" data-i18n="month-4">Maio</option>
+            <option value="5" data-i18n="month-5">Junho</option>
+            <option value="6" data-i18n="month-6">Julho</option>
+            <option value="7" data-i18n="month-7">Agosto</option>
+            <option value="8" data-i18n="month-8">Setembro</option>
+            <option value="9" data-i18n="month-9">Outubro</option>
+            <option value="10" data-i18n="month-10">Novembro</option>
+            <option value="11" data-i18n="month-11">Dezembro</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Grade de Culturas -->
+      <div id="crops-grid" class="crops-grid">
+        <!-- Renderizado via Javascript -->
+      </div>
+    </section>
+
     <!-- Rodapé -->
     <footer class="main-footer">
       <p>Desenvolvido para uso pessoal e sítio &copy; 2026. Dados meteorológicos abertos do Open-Meteo.</p>
@@ -222,6 +288,21 @@
         <button id="close-modal" class="close-btn"><i data-lucide="x"></i></button>
       </div>
       <div class="modal-body">
+
+        <!-- Tema do Site -->
+        <div class="config-section">
+          <h3><i data-lucide="sun"></i> <span data-i18n="config-site-theme-title">Aparência do Site</span></h3>
+          <p class="section-desc" data-i18n="config-site-theme-desc">Escolha o tema visual do aplicativo.</p>
+          <div class="input-group">
+            <label for="site-theme-select" data-i18n="config-site-theme-label">Tema:</label>
+            <select id="site-theme-select" class="select-control">
+              <option value="dark" data-i18n="config-site-theme-dark">Escuro (Premium Dark)</option>
+              <option value="light" data-i18n="config-site-theme-light">Claro (Premium Light)</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="modal-divider">
 
         <!-- Estilo do Mapa -->
         <div class="config-section">
