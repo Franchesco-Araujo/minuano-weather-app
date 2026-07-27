@@ -180,3 +180,9 @@ Este documento registra a evolução do projeto **Minuano, clima e tempo**, deta
     * Implementada a lógica de filtragem por caixa de texto na função `renderAgriculturalCalendar()` para filtrar no dígito (`input` event listener).
     * Atualizado o placeholder traduzido na troca de idiomas em `applyTranslations()`.
 
+### 25. Otimização do Cálculo da Probabilidade de Chuva Diária
+* **Objetivo**: Tornar a porcentagem de probabilidade de chuva exibida nos cartões diários mais realista e alinhada com serviços meteorológicos tradicionais (como Google Weather), evitando exibir picos isolados de 24h como probabilidade geral do dia.
+* **Solução**:
+  * **JS ([weather-services.js](file:///C:/Users/tifra/.gemini/antigravity/scratch/weather-app/weather-services.js))**: Modificado o mapeamento em `fetchOpenMeteoMultiModel` para calcular a média de probabilidade de chuva (`avgRainProb`) com base nas horas relevantes do dia. Para o dia atual ("Hoje"), descarta automaticamente as horas que já passaram e calcula a média das horas restantes do dia.
+
+

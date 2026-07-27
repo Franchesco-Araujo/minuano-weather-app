@@ -163,13 +163,35 @@ const WeatherServices = {
             conditionCode: currentData.weather_code,
             conditionText: translateWMO(currentData.weather_code).text
           },
-          daily: dailyTimes.map((date, index) => ({
-            date: date,
-            maxTemp: Math.round(dailyMaxTemps[index]),
-            minTemp: Math.round(dailyMinTemps[index]),
-            conditionCode: dailyCodes[index],
-            rainProb: dailyRainMax[index] !== undefined ? dailyRainMax[index] : 0
-          })),
+          daily: dailyTimes.map((date, index) => {
+            const dayHoursIndices = [];
+            hourlyTimes.forEach((time, i) => {
+              if (time.startsWith(date)) dayHoursIndices.push(i);
+            });
+            
+            let avgRainProb = 0;
+            if (dayHoursIndices.length > 0) {
+              let relevantIndices = dayHoursIndices;
+              if (index === 0) {
+                const currentHourIndex = hourlyTimes.findIndex(t => new Date(t) >= new Date());
+                if (currentHourIndex !== -1) {
+                  relevantIndices = dayHoursIndices.filter(i => i >= currentHourIndex);
+                }
+              }
+              if (relevantIndices.length > 0) {
+                const sum = relevantIndices.reduce((acc, i) => acc + (hourlyRainProb[i] || 0), 0);
+                avgRainProb = Math.round(sum / relevantIndices.length);
+              }
+            }
+
+            return {
+              date: date,
+              maxTemp: Math.round(dailyMaxTemps[index]),
+              minTemp: Math.round(dailyMinTemps[index]),
+              conditionCode: dailyCodes[index],
+              rainProb: avgRainProb
+            };
+          }),
           hourly: hourlyTimes.map((time, index) => ({
             time: time,
             temp: Math.round(hourlyTemps[index]),
